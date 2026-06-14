@@ -1,0 +1,23 @@
+---
+webservers:
+  hosts:
+    ansible3.hl.local:
+      ansible_host: 192.168.33.17 
+      ansible_ssh_user: automation 
+
+    ansible4.hl.local: 
+      ansible_host: 192.168.33.18 
+      ansible_ssh_user: 'automation'
+proxy:
+  hosts:
+    ansible2.hl.local:
+      ansible_host: 192.168.33.16 
+      ansible_ssh_user: 'automation'
+
+database:
+  hosts:
+    ansible5.hl.local:
+      ansible_host: 192.168.33.19
+      ansible_ssh_user: 'automation'
+
+

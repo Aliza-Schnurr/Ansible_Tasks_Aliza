@@ -1,0 +1,15 @@
+---
+- name: scheduled tasks
+  hosts: proxy
+  tasks:
+  - name: a root crontab is created that runs every hour
+    ansible.builtin.cron:
+      name: "add date to time.log"
+      weekday: "*"
+      minute: "0"
+      hour: "*"
+      job: "date >>  /var/log/time.log"
+      state: present
+    become: true
+
+
