@@ -1,0 +1,33 @@
+---
+# tasks file for sample-apache
+- name: install httpd, mod_ssl and php
+  ansible.builtin.yum:
+    name:
+      - "httpd"
+      - "mod_ssl"
+      - "php"
+    state: present
+
+- name: Start service Apache, if not started
+  ansible.builtin.service:
+    name: apache2
+    state: started
+    enabled: true
+
+
+- name: allow traffic on ports 80 HTTP and 443 HTTPS
+  ansible.posix.firewalld:
+    port: 
+      - 80/tcp
+      - 442/tcp     
+    permanent: true
+    state: enabled
+
+
+
+
+#get it to happen when the file is changed
+- name: Restart service apache, in all cases
+  ansible.builtin.service:
+    name: apache2
+    state: restarted
