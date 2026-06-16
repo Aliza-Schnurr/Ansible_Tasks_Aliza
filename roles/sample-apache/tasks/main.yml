@@ -7,27 +7,39 @@
       - "mod_ssl"
       - "php"
     state: present
+   
 
 - name: Start service Apache, if not started
   ansible.builtin.service:
-    name: apache2
+    name: httpd
     state: started
     enabled: true
 
 
-- name: allow traffic on ports 80 HTTP and 443 HTTPS
+
+- name: allow traffic on port 80 HTTP `
   ansible.posix.firewalld:
-    port: 
-      - 80/tcp
-      - 442/tcp     
+    port: 80/tcp
+    permanent: true
+    state: enabled
+
+
+- name: allow traffic on port 443 HTTPS
+  ansible.posix.firewalld:
+    port: 443/tcp
     permanent: true
     state: enabled
 
 
 
+- name: write ip adress using jinja2
+  ansible.builtin.template:
+    src: templates/server_address
+    dest: /var/www/html/index.html
+  notify:
+    - Restart apache
+    
 
-#get it to happen when the file is changed
-- name: Restart service apache, in all cases
-  ansible.builtin.service:
-    name: apache2
-    state: restarted
+
+
+
