@@ -1,0 +1,20 @@
+---
+- name: download from ansible-galaxy
+  hosts: proxy
+  roles:
+   - role: /home/automation/plays/roles/geerlingguy.haproxy
+     haproxy_backend_balance_method: roundrobin
+     haproxy_backend_servers: 
+      - name: ansible3
+        address: 192.168.33.17:80
+      - name: ansible4
+        address: 192.168.33.18:80
+     haproxy_frontend_port: 80
+
+  tasks:
+    - name: Permit traffic in port 80
+      ansible.posix.firewalld:
+        port: 80/tcp
+        state: enabled
+        when: 
+  become: true
