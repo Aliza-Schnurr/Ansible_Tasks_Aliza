@@ -4,11 +4,15 @@
   roles:
    - role: /home/automation/plays/roles/geerlingguy.haproxy
      haproxy_backend_balance_method: roundrobin
-     haproxy_backend_servers: 
-      - name: ansible3
-        address: 192.168.33.17:80
-      - name: ansible4
-        address: 192.168.33.18:80
+     haproxy_backend_servers: >
+      [
+      {% for webserver in groups['webservers'] %}
+      {
+        "name": "{{ hostvars[webserver]['ansible_hostname'] | default(webserver) }}",
+        "address": "{{ hostvars[webserver]['ansible_host'] | default(webserver) }}:80",
+      }{% if not loop.last %},{% endif %}
+      {% endfor %}
+      ] 
      haproxy_frontend_port: 80
 
   tasks:
