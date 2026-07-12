@@ -1,0 +1,16 @@
+---
+- name: Work with ansible facts
+  hosts: database
+  tasks:
+    - name: Create a facts directory if it does not exist
+      ansible.builtin.file:
+        path: /etc/ansible/facts.d
+        state: directory
+    - name: create a text file
+      ansible.builtin.copy:
+        src: /home/automation/plays/templates/database_custom_fact
+        dest: /etc/ansible/facts.d/my_server.fact
+    - name: retrieve facts
+      setup:
+  become: true
+
