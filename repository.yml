@@ -10,4 +10,5 @@
       gpgkey: http://repo.mysql.com/RPM-GPG-KEY-mysql
       gpgcheck: true
       enabled: true
+  become: true
 
