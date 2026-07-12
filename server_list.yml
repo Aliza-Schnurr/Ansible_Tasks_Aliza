@@ -1,0 +1,15 @@
+
+---
+- name: create serverlist on database hosts
+  hosts: database
+  become: true
+  tasks:
+    - name: write into file using jinja2
+      ansible.builtin.template:
+        src: /home/automation/plays/templates/server_list
+        dest: /etc/server_list.txt
+        owner: automation
+        mode: '0600'
+        setype: net_conf_t
+
+

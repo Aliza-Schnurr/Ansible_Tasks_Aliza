@@ -1,0 +1,9 @@
+
+{% for group in groups %}
+{% if group != 'all' and group != 'ungrouped' %}
+{% for host in groups[group] %}
+{{ host }}
+{% endfor %}
+{% endif %}
+{% endfor %}
+
