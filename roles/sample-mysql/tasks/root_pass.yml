@@ -16,7 +16,7 @@
     #no_log: true
 
 
-- name: Set root password from temporary RHEL password
+- name: Set root password from temporary default password
   command:
     argv:
       - mysqladmin
@@ -24,9 +24,30 @@
       - root
       - "-p{{ mysql_initial_password }}"
       - password
-      - "{{ mysql_root_password }}"
+      - "aaBB@@cc1122"
         #no_log: true
-  when:
-    - mysql_initial_password is defined
-    - mysql_initial_password | length > 0
+
+
+- name: uninstall validate password plugin
+  command:
+    argv:
+      - mysql
+      - -u
+      - root
+      - --password=aaBB@@cc1122
+      - -e
+      - UNINSTALL COMPONENT 'file://component_validate_password';
+
+
+
+
+- name: Set root password from configured temporary password
+  command:
+    argv:
+      - mysqladmin
+      - --user=root
+      - --password=aaBB@@cc1122
+      - password
+      - devops
+        #no_log: true
 
