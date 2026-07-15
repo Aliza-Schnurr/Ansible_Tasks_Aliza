@@ -1,0 +1,32 @@
+---
+- name: Start MySQL to generate initial password
+  systemd:
+    name: "mysqld"
+    state: started
+
+- name: Get temporary root password from MySQL log
+  shell: "grep 'temporary password' /var/log/mysqld.log | tail -1 | awk '{print $NF}'"
+  register: mysql_temp_password
+  changed_when: false
+  #no_log: true
+
+- name: Set the MySQL temp password fact
+  set_fact:
+    mysql_initial_password: "{{ mysql_temp_password.stdout }}"
+    #no_log: true
+
+
+- name: Set root password from temporary RHEL password
+  command:
+    argv:
+      - mysqladmin
+      - -u
+      - root
+      - "-p{{ mysql_initial_password }}"
+      - password
+      - "{{ mysql_root_password }}"
+        #no_log: true
+  when:
+    - mysql_initial_password is defined
+    - mysql_initial_password | length > 0
+

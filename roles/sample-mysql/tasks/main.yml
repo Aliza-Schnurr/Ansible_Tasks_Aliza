@@ -1,0 +1,69 @@
+---
+# tasks file for sample-mysql
+
+# Necessary to use lv tools on machine
+- name: Install the latest version of lvm2
+  ansible.builtin.dnf:
+    name: lvm2
+    state: latest
+
+- name: Create a new ext4 primary partition
+  community.general.parted:
+    device: /dev/sdb
+    number: 1
+    state: present
+    fs_type: ext4
+    part_end: 800MB
+
+
+- name: Create a volume group on top of /dev/sdb1
+  community.general.lvg:
+    vg: vg_database
+    pvs: /dev/sdb1
+
+- name: Create a logical volume of 512m
+  community.general.lvol:
+    vg: vg_database
+    lv: lv_mysql
+    size: 512
+
+- name: format the xfs filesystem
+  filesystem:
+    fstype: xfs
+    dev: /dev/vg_database/lv_mysql
+
+
+
+- name: mount the lv on /mnt/mysql_backups
+  mount:
+    path: /mnt/mysql_backups
+    src: /dev/vg_database/lv_mysql
+    fstype: xfs
+    state: mounted
+
+- name: Install mysql-community-server package
+  include_tasks: "install.yml"
+
+- name: Permit traffic in default zone on mysql port
+  ansible.posix.firewalld:
+    port: "{{ mysql_port }}"/tcp
+    permanent: true
+    state: enabled
+
+- name: change root password
+  include_tasks: "root_pass.yml"
+
+
+
+- name: Start and enable mysql
+  systemd:
+    name: "mysqld"
+    state: started
+    enabled: true
+
+- name: Create .my.cnf 
+  ansible.builtin.template:
+    src: /home/automation/plays/roles/sample-mysql/templates/my.cnf.j2
+    dest: /etc/my.cnf
+
+
