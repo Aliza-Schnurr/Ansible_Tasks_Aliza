@@ -46,7 +46,7 @@
 
 - name: Permit traffic in default zone on mysql port
   ansible.posix.firewalld:
-    port: "{{ mysql_port }}"/tcp
+    port: 3306/tcp
     permanent: true
     state: enabled
 

@@ -1,6 +1,5 @@
 ---
 # defaults file for sample-mysql
 #
-mysql_root_password: "Bsmch@500K!"
-mysql_port: 3306
+mysql_root_password: "devops"
 mysql_yum_repo_rpm_url:  "https://dev.mysql.com/get/mysql84-community-release-el9-4.noarch.rpm"
